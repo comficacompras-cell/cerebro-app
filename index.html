@@ -3,81 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Trainer - Asistente Proactivo</title>
+    <title>AI TRAINER - Neomorphic Elite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos neomórficos personalizados */
+        .neo-inset {
+            box-shadow: inset 4px 4px 10px #030712, inset -4px -4px 10px #1f2937;
+        }
+        .neo-outset {
+            box-shadow: 4px 4px 10px #030712, -4px -4px 10px #1f2937;
+        }
+        .neo-button:active {
+            box-shadow: inset 2px 2px 5px #030712, inset -2px -2px 5px #1f2937;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-white font-sans min-h-screen">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen pb-24">
 
-    <nav class="p-6 flex justify-between items-center border-b border-slate-800">
+    <nav class="p-6 flex justify-between items-center bg-slate-950 border-b border-slate-900 shadow-lg">
         <div>
-            <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">AI TRAINER v1.0</h1>
-            <p class="text-xs text-slate-400">Analizando datos científicos en tiempo real...</p>
+            <h1 class="text-2xl font-black text-rose-500 tracking-tighter">AI TRAINER <span class="text-xs text-slate-600 font-mono">v1.1</span></h1>
+            <p class="text-xs text-slate-400">Analizando ciencia deportiva 2026...</p>
         </div>
-        <div class="h-3 w-3 bg-emerald-500 rounded-full animate-pulse"></div>
+        <div class="h-4 w-4 bg-rose-500 rounded-full animate-pulse shadow-lg shadow-rose-900"></div>
     </nav>
 
-    <main class="p-6 max-w-lg mx-auto space-y-6">
+    <main class="p-6 max-w-lg mx-auto space-y-8">
         
-        <div class="bg-slate-800 rounded-3xl p-6 shadow-2xl border border-slate-700">
-            <div class="flex justify-between items-start mb-4">
-                <h2 class="text-lg font-semibold text-slate-300">Estado de Recuperación</h2>
-                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded-full font-bold">ÓPTIMO</span>
+        <div class="bg-slate-950 p-6 rounded-3xl neo-outset border border-slate-900/50">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-bold text-slate-300">Recuperación Neural</h2>
+                <span class="bg-rose-500/10 text-rose-400 text-xs px-3 py-1 rounded-full font-bold border border-rose-900">ÓPTIMO</span>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="relative">
-                    <svg class="h-20 w-20 transform -rotate-90">
-                        <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-700"/>
-                        <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="8" fill="transparent" stroke-dasharray="219" stroke-dashoffset="44" class="text-blue-500 transition-all duration-1000"/>
+            <div class="flex items-center gap-6">
+                <div class="relative neo-inset p-4 rounded-full">
+                    <svg class="h-24 w-24 transform -rotate-90">
+                        <circle cx="48" cy="48" r="40" stroke="#111827" stroke-width="12" fill="transparent"/>
+                        <circle cx="48" cy="48" r="40" stroke="#f43f5e" stroke-width="12" fill="transparent" stroke-dasharray="251" stroke-dashoffset="50" class="transition-all duration-1000"/>
                     </svg>
-                    <span class="absolute inset-0 flex items-center justify-center font-bold text-lg">80%</span>
+                    <span class="absolute inset-0 flex items-center justify-center font-black text-2xl text-rose-500">80%</span>
                 </div>
-                <div>
-                    <p class="text-sm text-slate-400 italic">"Basado en tus 7.5h de sueño, hoy es un día ideal para enfoque en Hipertrofia."</p>
-                </div>
+                <p class="text-sm text-slate-400 font-light italic leading-relaxed">
+                    "Tus ciclos de sueño indican una fase de supercompensación. Hoy es ideal para cargas de alta intensidad biomecánica."
+                </p>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <button onclick="alert('IA: Registrando hidratación...')" class="bg-slate-800 p-4 rounded-2xl border border-slate-700 hover:border-blue-500 transition-all group">
-                <i class="fa-solid fa-droplet text-blue-400 mb-2 text-xl group-hover:scale-110 transition-transform"></i>
-                <p class="text-xs block text-slate-400 uppercase">Agua</p>
-                <span class="font-bold">1.5 / 3L</span>
+        <div class="grid grid-cols-2 gap-6">
+            <button onclick="alert('IA: Hidratación registrada.')" class="bg-slate-950 p-6 rounded-3xl neo-outset border border-slate-900/50 text-center neo-button active:scale-95 transition-all">
+                <i class="fa-solid fa-droplet text-blue-500 mb-3 text-3xl shadow-lg shadow-blue-900/30"></i>
+                <p class="text-xs block text-slate-400 uppercase font-bold tracking-wider mb-1">Agua</p>
+                <span class="text-xl font-black">1.5 <span class="text-sm text-slate-600">/ 3L</span></span>
             </button>
-            <button onclick="alert('IA: Abriendo escáner biométrico...')" class="bg-slate-800 p-4 rounded-2xl border border-slate-700 hover:border-emerald-500 transition-all group">
-                <i class="fa-solid fa-camera text-emerald-400 mb-2 text-xl group-hover:scale-110 transition-transform"></i>
-                <p class="text-xs block text-slate-400 uppercase">Escanear</p>
-                <span class="font-bold italic text-[10px]">Comida / Físico</span>
+            <button onclick="alert('IA: Iniciando cámara para escáner biomecánico...')" class="bg-slate-950 p-6 rounded-3xl neo-outset border border-slate-900/50 text-center neo-button active:scale-95 transition-all">
+                <i class="fa-solid fa-camera text-emerald-500 mb-3 text-3xl shadow-lg shadow-emerald-900/30"></i>
+                <p class="text-xs block text-slate-400 uppercase font-bold tracking-wider mb-1">Escáner</p>
+                <span class="text-xl font-black italic">Fotos</span>
             </button>
         </div>
 
-        <div class="bg-slate-800 rounded-3xl p-6 border border-slate-700 text-center">
-            <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase tracking-widest">Rutina del Día: Pecho/Tríceps</h3>
+        <div class="bg-slate-950 rounded-3xl p-6 neo-outset border border-slate-900/50">
+            <div class="flex items-center gap-4 mb-6 pb-4 border-b border-slate-900">
+                <i class="fa-solid fa-dumbbell text-slate-700 text-2xl"></i>
+                <h3 class="text-xl font-black tracking-tight">Rutina: Enfoque Fuerza</h3>
+            </div>
+            
+            <div class="space-y-4 mb-8">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-400">1. Press de Banca</span>
+                    <span class="font-mono text-xs bg-slate-900 px-2 py-1 rounded">3 x 5 @ 85% RM</span>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-400">2. Sentadilla Barra</span>
+                    <span class="font-mono text-xs bg-slate-900 px-2 py-1 rounded">4 x 6 @ 80% RM</span>
+                </div>
+            </div>
+
             <div class="flex gap-4">
-                <button onclick="alert('IA: ¡Excelente! Subiendo dificultad para la próxima sesión.')" class="flex-1 bg-gradient-to-br from-emerald-500 to-teal-600 p-4 rounded-xl font-bold shadow-lg shadow-emerald-900/20 active:scale-95 transition-all">
+                <button onclick="alert('IA: ¡Excelente! Subiendo dificultad.')" class="flex-1 bg-gradient-to-br from-emerald-600 to-emerald-700 p-4 rounded-xl font-bold active:scale-95 transition-all shadow-lg shadow-emerald-900/40">
                     LOGRADO ✅
                 </button>
-                <button onclick="alert('IA: Entendido. Bajando intensidad para evitar sobreentrenamiento.')" class="flex-1 bg-gradient-to-br from-rose-500 to-orange-600 p-4 rounded-xl font-bold shadow-lg shadow-rose-900/20 active:scale-95 transition-all">
+                <button onclick="alert('IA: Fatiga detectada. Bajando volumen.')" class="flex-1 bg-gradient-to-br from-rose-600 to-rose-700 p-4 rounded-xl font-bold active:scale-95 transition-all shadow-lg shadow-rose-900/40">
                     MUY PESADO ❌
                 </button>
             </div>
         </div>
 
-        <div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-2xl flex gap-4 items-center">
-            <i class="fa-solid fa-flask-vial text-blue-400"></i>
-            <p class="text-xs text-blue-200">
-                <span class="font-bold">Dato Científico:</span> Entrenar cerca del fallo técnico, no del fallo muscular total, optimiza la ganancia de fuerza a largo plazo.
-            </p>
-        </div>
-
     </main>
 
-    <div class="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/80 backdrop-blur-md border-t border-slate-800 flex justify-around items-center">
-        <i class="fa-solid fa-house text-blue-500 text-xl"></i>
-        <i class="fa-solid fa-chart-line text-slate-600 text-xl"></i>
-        <i class="fa-solid fa-utensils text-slate-600 text-xl"></i>
-        <i class="fa-solid fa-user text-slate-600 text-xl"></i>
-    </div>
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-lg border-t border-slate-900 p-4 flex justify-around items-center shadow-xl">
+        <i class="fa-solid fa-house text-rose-500 text-xl shadow-lg shadow-rose-900/30"></i>
+        <i class="fa-solid fa-chart-simple text-slate-700 text-xl"></i>
+        <i class="fa-solid fa-flask text-slate-700 text-xl"></i>
+        <i class="fa-solid fa-user text-slate-700 text-xl"></i>
+    </nav>
 
 </body>
 </html>
