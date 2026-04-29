@@ -3,93 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI TRAINER - Elite Biometrics</title>
+    <title>CEREBRO 0.512 - AI BIOMETRICS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0f111a; }
-        .neo-card {
-            background: #0f111a;
-            box-shadow: 8px 8px 16px #06070a, -8px -8px 16px #181b2a;
-            border-radius: 24px;
+        body { background: radial-gradient(circle at top, #1a1c2e 0%, #06070a 100%); }
+        .glass-card {
+            background: rgba(15, 17, 26, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 62, 62, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
-        .neo-inset {
-            background: #0f111a;
-            box-shadow: inset 6px 6px 12px #06070a, inset -6px -6px 12px #181b2a;
+        .neon-text { color: #ff3e3e; text-shadow: 0 0 15px rgba(255, 62, 62, 0.6); }
+        .scan-line {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff3e3e, transparent);
+            animation: scan 3s linear infinite;
         }
-        .accent-red { color: #ff3e3e; text-shadow: 0 0 10px rgba(255, 62, 62, 0.5); }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
     </style>
 </head>
-<body class="text-slate-200 font-sans p-4 pb-24">
+<body class="text-slate-100 font-sans p-4">
 
-    <header class="flex justify-between items-center mb-8 px-2">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-2xl font-black accent-red tracking-tighter italic">CEREBRO 0.512</h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Neural Training System</p>
+            <h1 class="text-3xl font-black italic neon-text tracking-tighter">CEREBRO 0.512</h1>
+            <p class="text-[9px] uppercase tracking-[0.3em] text-slate-500">Neural Performance OS</p>
         </div>
-        <div class="h-10 w-10 neo-card flex items-center justify-center">
-            <i class="fa-solid fa-user-ninja text-rose-500"></i>
-        </div>
-    </header>
-
-    <div class="neo-card p-6 mb-8 border border-slate-800/50">
-        <div class="flex justify-between items-start mb-4">
-            <h2 class="text-sm font-bold uppercase text-slate-400">Estado de Recuperación</h2>
-            <span class="text-xs font-mono text-emerald-400">SYSTEM: ONLINE</span>
-        </div>
-        <div class="flex items-center gap-6">
-            <div class="relative h-24 w-24 neo-inset rounded-full flex items-center justify-center">
-                <svg class="absolute h-20 w-20 transform -rotate-90">
-                    <circle cx="40" cy="40" r="35" stroke="#1e293b" stroke-width="6" fill="transparent" />
-                    <circle cx="40" cy="40" r="35" stroke="#ff3e3e" stroke-width="6" fill="transparent" stroke-dasharray="220" stroke-dashoffset="44" />
-                </svg>
-                <span class="text-xl font-black accent-red">80%</span>
-            </div>
-            <div class="flex-1">
-                <p class="text-xs leading-relaxed text-slate-400 italic">
-                    "Fatiga del SNC detectada en 15%. Carga de trabajo recomendada: <span class="text-white font-bold">ALTA (Hipertrofia)</span>."
-                </p>
-            </div>
+        <div class="text-right">
+            <span class="block text-[10px] text-slate-400 font-mono">LATENCY: 12ms</span>
+            <span class="text-emerald-500 font-bold text-xs">● AI ACTIVE</span>
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-6 mb-8">
-        <div class="neo-card p-5 text-center border border-slate-800/30">
-            <i class="fa-solid fa-droplet text-blue-500 mb-2 text-2xl"></i>
-            <p class="text-[10px] uppercase text-slate-500 font-bold mb-1 tracking-tighter">Hidratación</p>
-            <span class="text-lg font-black italic">1.5 / 3.0L</span>
-        </div>
-        <div class="neo-card p-5 text-center border border-slate-800/30">
-            <i class="fa-solid fa-bolt-lightning accent-red mb-2 text-2xl"></i>
-            <p class="text-[10px] uppercase text-slate-500 font-bold mb-1 tracking-tighter">Preparado</p>
-            <span class="text-lg font-black italic">READY</span>
-        </div>
-    </div>
-
-    <div class="neo-card overflow-hidden mb-8 relative border border-rose-900/20">
-        <div class="bg-rose-600/10 p-3 flex items-center gap-2 border-b border-rose-900/20">
-            <i class="fa-solid fa-video accent-red text-xs animate-pulse"></i>
-            <span class="text-[10px] font-black uppercase tracking-widest">Módulo de Análisis Biomecánico</span>
-        </div>
-        <div class="p-6 text-center">
-            <button onclick="alert('IA: Accediendo a cámara para análisis de velocidad (VBT)...')" class="w-full bg-rose-600 hover:bg-rose-700 p-4 rounded-xl font-black text-sm tracking-widest transition-all active:scale-95 shadow-lg shadow-rose-900/40 uppercase italic">
-                Activar Escáner IA
+    <div class="glass-card rounded-3xl overflow-hidden mb-8 relative border border-rose-500/20">
+        <div class="absolute top-0 left-0 w-full scan-line z-10"></div>
+        <div class="bg-slate-900 h-56 flex flex-col items-center justify-center relative">
+            <i class="fa-solid fa-expand text-slate-800 text-9xl absolute opacity-20"></i>
+            <i class="fa-solid fa-camera-retro text-rose-500 text-4xl mb-4"></i>
+            <button onclick="startCamera()" class="bg-rose-600 px-6 py-2 rounded-full font-black text-xs tracking-widest shadow-lg shadow-rose-900/50">
+                ACTIVAR ESCÁNER IA
             </button>
-            <p class="text-[9px] text-slate-500 mt-3 px-4">
-                Usa la cámara para medir RPE real, velocidad de la barra y corrección técnica instantánea.
-            </p>
+            <p class="text-[9px] mt-4 text-slate-500 font-mono uppercase tracking-tighter">Detectando puntos de articulación...</p>
         </div>
     </div>
 
-    <nav class="fixed bottom-6 left-6 right-6 h-16 neo-card flex justify-around items-center px-4 border border-slate-800/50">
-        <i class="fa-solid fa-house-chimney accent-red text-lg"></i>
-        <i class="fa-solid fa-chart-line text-slate-600 text-lg"></i>
-        <div class="h-12 w-12 neo-card mb-8 flex items-center justify-center border border-rose-500/30">
-            <i class="fa-solid fa-plus accent-red"></i>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="glass-card p-4 rounded-2xl border-l-4 border-blue-500">
+            <span class="text-[10px] text-slate-500 block uppercase">Hidratación</span>
+            <span class="text-xl font-black">1.5 <span class="text-xs text-slate-600">/ 3L</span></span>
         </div>
-        <i class="fa-solid fa-flask-vial text-slate-600 text-lg"></i>
-        <i class="fa-solid fa-gear text-slate-600 text-lg"></i>
-    </nav>
+        <div class="glass-card p-4 rounded-2xl border-l-4 border-rose-500">
+            <span class="text-[10px] text-slate-500 block uppercase">Fatiga CNS</span>
+            <span class="text-xl font-black text-rose-400">15% <i class="fa-solid fa-chart-line text-[10px]"></i></span>
+        </div>
+    </div>
 
+    <div class="glass-card p-6 rounded-3xl mb-24">
+        <h3 class="text-xs font-bold text-slate-500 uppercase mb-4 tracking-widest">Ajuste de Carga IA</h3>
+        <p class="text-sm leading-relaxed mb-6 italic text-slate-300">
+            "Basado en tu velocidad de ejecución previa, hoy el 1-RM estimado ha subido a <span class="text-white font-bold">124kg</span>. ¿Deseas aplicar la progresión?"
+        </p>
+        <div class="flex gap-4">
+            <button class="flex-1 bg-white text-black p-4 rounded-xl font-black text-xs uppercase tracking-tighter">Aplicar Ajuste</button>
+            <button class="flex-1 glass-card p-4 rounded-xl font-black text-xs uppercase tracking-tighter border-slate-700 text-slate-400 italic">Ignorar</button>
+        </div>
+    </div>
+
+    <script>
+        function startCamera() {
+            alert("IA: Iniciando motor de visión... Solicita acceso a cámara en el navegador.");
+        }
+    </script>
 </body>
 </html>
