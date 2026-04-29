@@ -3,76 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEREBRO 0.512 - AI BIOMETRICS</title>
+    <title>CEREBRO 0.512 - VISION MODE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: radial-gradient(circle at top, #1a1c2e 0%, #06070a 100%); }
+        body { background: #06070a; color: #e2e8f0; }
         .glass-card {
-            background: rgba(15, 17, 26, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 62, 62, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            background: rgba(15, 17, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 62, 62, 0.2);
         }
-        .neon-text { color: #ff3e3e; text-shadow: 0 0 15px rgba(255, 62, 62, 0.6); }
-        .scan-line {
-            height: 2px;
-            background: linear-gradient(to right, transparent, #ff3e3e, transparent);
-            animation: scan 3s linear infinite;
+        .neon-text { color: #ff3e3e; text-shadow: 0 0 10px rgba(255, 62, 62, 0.5); }
+        #video-container { position: relative; overflow: hidden; border-radius: 20px; }
+        #webcam { transform: scaleX(-1); width: 100%; height: auto; display: none; }
+        .scan-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border: 2px solid rgba(255, 62, 62, 0.3);
+            pointer-events: none; display: none;
         }
-        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
     </style>
 </head>
-<body class="text-slate-100 font-sans p-4">
+<body class="p-4 pb-24">
 
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-3xl font-black italic neon-text tracking-tighter">CEREBRO 0.512</h1>
-            <p class="text-[9px] uppercase tracking-[0.3em] text-slate-500">Neural Performance OS</p>
+    <header class="mb-6">
+        <h1 class="text-2xl font-black italic neon-text tracking-tighter">CEREBRO 0.512</h1>
+        <div class="flex items-center gap-2">
+            <span class="h-2 w-2 bg-rose-500 rounded-full animate-ping"></span>
+            <span class="text-[10px] text-slate-500 font-mono uppercase tracking-widest">Vision System Active</span>
         </div>
-        <div class="text-right">
-            <span class="block text-[10px] text-slate-400 font-mono">LATENCY: 12ms</span>
-            <span class="text-emerald-500 font-bold text-xs">● AI ACTIVE</span>
-        </div>
-    </div>
+    </header>
 
-    <div class="glass-card rounded-3xl overflow-hidden mb-8 relative border border-rose-500/20">
-        <div class="absolute top-0 left-0 w-full scan-line z-10"></div>
-        <div class="bg-slate-900 h-56 flex flex-col items-center justify-center relative">
-            <i class="fa-solid fa-expand text-slate-800 text-9xl absolute opacity-20"></i>
-            <i class="fa-solid fa-camera-retro text-rose-500 text-4xl mb-4"></i>
-            <button onclick="startCamera()" class="bg-rose-600 px-6 py-2 rounded-full font-black text-xs tracking-widest shadow-lg shadow-rose-900/50">
-                ACTIVAR ESCÁNER IA
+    <div id="video-container" class="glass-card mb-6">
+        <div id="placeholder" class="h-64 flex flex-col items-center justify-center p-6 text-center">
+            <i class="fa-solid fa-expand text-slate-800 text-6xl mb-4"></i>
+            <p class="text-xs text-slate-400 mb-4 font-mono">LISTO PARA ANÁLISIS BIOMECÁNICO</p>
+            <button onclick="initCamera()" class="bg-rose-600 hover:bg-rose-700 text-white px-8 py-3 rounded-full font-black text-xs tracking-widest transition-all">
+                ABRIR CÁMARA
             </button>
-            <p class="text-[9px] mt-4 text-slate-500 font-mono uppercase tracking-tighter">Detectando puntos de articulación...</p>
+        </div>
+        
+        <video id="webcam" autoplay playsinline></video>
+        <div id="overlay" class="scan-overlay">
+            <div class="absolute top-4 left-4 border-l-2 border-t-2 border-rose-500 w-8 h-8"></div>
+            <div class="absolute top-4 right-4 border-r-2 border-t-2 border-rose-500 w-8 h-8"></div>
+            <div class="absolute bottom-4 left-4 border-l-2 border-b-2 border-rose-500 w-8 h-8"></div>
+            <div class="absolute bottom-4 right-4 border-r-2 border-b-2 border-rose-500 w-8 h-8"></div>
+            <div class="absolute top-1/2 left-0 w-full h-[1px] bg-rose-500/30 animate-pulse"></div>
         </div>
     </div>
 
     <div class="grid grid-cols-2 gap-4 mb-6">
-        <div class="glass-card p-4 rounded-2xl border-l-4 border-blue-500">
-            <span class="text-[10px] text-slate-500 block uppercase">Hidratación</span>
-            <span class="text-xl font-black">1.5 <span class="text-xs text-slate-600">/ 3L</span></span>
+        <div class="glass-card p-4 rounded-2xl">
+            <p class="text-[9px] text-slate-500 uppercase font-bold mb-1 tracking-widest">Velocidad (m/s)</p>
+            <p class="text-2xl font-black font-mono">0.00</p>
         </div>
-        <div class="glass-card p-4 rounded-2xl border-l-4 border-rose-500">
-            <span class="text-[10px] text-slate-500 block uppercase">Fatiga CNS</span>
-            <span class="text-xl font-black text-rose-400">15% <i class="fa-solid fa-chart-line text-[10px]"></i></span>
+        <div class="glass-card p-4 rounded-2xl">
+            <p class="text-[9px] text-slate-500 uppercase font-bold mb-1 tracking-widest">RPE Estimado</p>
+            <p class="text-2xl font-black font-mono text-rose-500">---</p>
         </div>
     </div>
 
-    <div class="glass-card p-6 rounded-3xl mb-24">
-        <h3 class="text-xs font-bold text-slate-500 uppercase mb-4 tracking-widest">Ajuste de Carga IA</h3>
-        <p class="text-sm leading-relaxed mb-6 italic text-slate-300">
-            "Basado en tu velocidad de ejecución previa, hoy el 1-RM estimado ha subido a <span class="text-white font-bold">124kg</span>. ¿Deseas aplicar la progresión?"
-        </p>
-        <div class="flex gap-4">
-            <button class="flex-1 bg-white text-black p-4 rounded-xl font-black text-xs uppercase tracking-tighter">Aplicar Ajuste</button>
-            <button class="flex-1 glass-card p-4 rounded-xl font-black text-xs uppercase tracking-tighter border-slate-700 text-slate-400 italic">Ignorar</button>
+    <div class="glass-card p-5 rounded-3xl">
+        <h3 class="text-[10px] font-black text-slate-500 uppercase mb-3">Logs del Sistema</h3>
+        <div id="logs" class="text-[10px] font-mono text-slate-400 space-y-1">
+            <p>> Esperando señal de video...</p>
+            <p>> Módulo de biomecánica cargado.</p>
         </div>
     </div>
 
     <script>
-        function startCamera() {
-            alert("IA: Iniciando motor de visión... Solicita acceso a cámara en el navegador.");
+        async function initCamera() {
+            const video = document.getElementById('webcam');
+            const placeholder = document.getElementById('placeholder');
+            const overlay = document.getElementById('overlay');
+            const logs = document.getElementById('logs');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' }, 
+                    audio: false 
+                });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                placeholder.style.display = 'none';
+                overlay.style.display = 'block';
+                
+                logs.innerHTML += '<p class="text-emerald-500 font-bold">> CÁMARA CONECTADA. ANALIZANDO...</p>';
+            } catch (err) {
+                console.error("Error al acceder a la cámara: ", err);
+                alert("La IA necesita permiso de cámara para el análisis biomecánico.");
+            }
         }
     </script>
 </body>
