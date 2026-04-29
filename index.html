@@ -3,66 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cerebro Adaptativo Demo</title>
+    <title>IA Trainer - Asistente Proactivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 flex flex-col items-center justify-center h-screen font-sans">
+<body class="bg-slate-900 text-white font-sans min-h-screen">
 
-    <div class="bg-white p-8 rounded-2xl shadow-xl text-center max-w-md w-full">
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">Cerebro Adaptativo</h1>
+    <nav class="p-6 flex justify-between items-center border-b border-slate-800">
+        <div>
+            <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">AI TRAINER v1.0</h1>
+            <p class="text-xs text-slate-400">Analizando datos científicos en tiempo real...</p>
+        </div>
+        <div class="h-3 w-3 bg-emerald-500 rounded-full animate-pulse"></div>
+    </nav>
+
+    <main class="p-6 max-w-lg mx-auto space-y-6">
         
-        <div class="mb-6">
-            <p class="text-sm text-gray-500 uppercase tracking-widest">Dificultad Actual</p>
-            <div id="difficulty-display" class="text-6xl font-black text-blue-600 transition-all duration-300">1.0</div>
+        <div class="bg-slate-800 rounded-3xl p-6 shadow-2xl border border-slate-700">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-lg font-semibold text-slate-300">Estado de Recuperación</h2>
+                <span class="bg-emerald-500/20 text-emerald-400 text-xs px-2 py-1 rounded-full font-bold">ÓPTIMO</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <svg class="h-20 w-20 transform -rotate-90">
+                        <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-700"/>
+                        <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="8" fill="transparent" stroke-dasharray="219" stroke-dashoffset="44" class="text-blue-500 transition-all duration-1000"/>
+                    </svg>
+                    <span class="absolute inset-0 flex items-center justify-center font-bold text-lg">80%</span>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-400 italic">"Basado en tus 7.5h de sueño, hoy es un día ideal para enfoque en Hipertrofia."</p>
+                </div>
+            </div>
         </div>
 
-        <div id="status-badge" class="hidden mb-6 p-2 bg-red-100 text-red-700 rounded-lg font-semibold animate-pulse">
-            ⚠️ REPASO DE FUNDAMENTOS ACTIVADO
-        </div>
-
-        <div class="flex gap-4">
-            <button onclick="handleSuccess()" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition-all">
-                Acierto ✅
+        <div class="grid grid-cols-2 gap-4">
+            <button onclick="alert('IA: Registrando hidratación...')" class="bg-slate-800 p-4 rounded-2xl border border-slate-700 hover:border-blue-500 transition-all group">
+                <i class="fa-solid fa-droplet text-blue-400 mb-2 text-xl group-hover:scale-110 transition-transform"></i>
+                <p class="text-xs block text-slate-400 uppercase">Agua</p>
+                <span class="font-bold">1.5 / 3L</span>
             </button>
-            <button onclick="handleFailure()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition-all">
-                Fallo ❌
+            <button onclick="alert('IA: Abriendo escáner biométrico...')" class="bg-slate-800 p-4 rounded-2xl border border-slate-700 hover:border-emerald-500 transition-all group">
+                <i class="fa-solid fa-camera text-emerald-400 mb-2 text-xl group-hover:scale-110 transition-transform"></i>
+                <p class="text-xs block text-slate-400 uppercase">Escanear</p>
+                <span class="font-bold italic text-[10px]">Comida / Físico</span>
             </button>
         </div>
 
-        <button onclick="reset()" class="mt-8 text-gray-400 hover:text-gray-600 text-sm underline">Reiniciar sesión</button>
+        <div class="bg-slate-800 rounded-3xl p-6 border border-slate-700 text-center">
+            <h3 class="text-sm font-bold text-slate-500 mb-4 uppercase tracking-widest">Rutina del Día: Pecho/Tríceps</h3>
+            <div class="flex gap-4">
+                <button onclick="alert('IA: ¡Excelente! Subiendo dificultad para la próxima sesión.')" class="flex-1 bg-gradient-to-br from-emerald-500 to-teal-600 p-4 rounded-xl font-bold shadow-lg shadow-emerald-900/20 active:scale-95 transition-all">
+                    LOGRADO ✅
+                </button>
+                <button onclick="alert('IA: Entendido. Bajando intensidad para evitar sobreentrenamiento.')" class="flex-1 bg-gradient-to-br from-rose-500 to-orange-600 p-4 rounded-xl font-bold shadow-lg shadow-rose-900/20 active:scale-95 transition-all">
+                    MUY PESADO ❌
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-blue-900/20 border border-blue-500/30 p-4 rounded-2xl flex gap-4 items-center">
+            <i class="fa-solid fa-flask-vial text-blue-400"></i>
+            <p class="text-xs text-blue-200">
+                <span class="font-bold">Dato Científico:</span> Entrenar cerca del fallo técnico, no del fallo muscular total, optimiza la ganancia de fuerza a largo plazo.
+            </p>
+        </div>
+
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/80 backdrop-blur-md border-t border-slate-800 flex justify-around items-center">
+        <i class="fa-solid fa-house text-blue-500 text-xl"></i>
+        <i class="fa-solid fa-chart-line text-slate-600 text-xl"></i>
+        <i class="fa-solid fa-utensils text-slate-600 text-xl"></i>
+        <i class="fa-solid fa-user text-slate-600 text-xl"></i>
     </div>
 
-    <script>
-        let difficulty = 1.0;
-        let failures = 0;
-
-        function updateUI() {
-            document.getElementById('difficulty-display').innerText = difficulty.toFixed(3);
-            if (failures >= 3) {
-                document.getElementById('status-badge').classList.remove('hidden');
-                document.getElementById('difficulty-display').classList.replace('text-blue-600', 'text-red-600');
-            } else {
-                document.getElementById('status-badge').classList.add('hidden');
-                document.getElementById('difficulty-display').classList.replace('text-red-600', 'text-blue-600');
-            }
-        }
-
-        function handleSuccess() {
-            failures = 0; // Se resetea el contador de fallos
-            updateUI();
-        }
-
-        function handleFailure() {
-            failures++;
-            difficulty = difficulty * 0.8; // Tu fórmula de reducción del 20%
-            updateUI();
-        }
-
-        function reset() {
-            difficulty = 1.0;
-            failures = 0;
-            updateUI();
-        }
-    </script>
 </body>
 </html>
