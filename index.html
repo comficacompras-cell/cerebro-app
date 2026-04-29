@@ -19,6 +19,7 @@
             --bg-deep: #050507;
             --bg-card: #0c0e14;
             --bg-card-inner: #10131a;
+            --red-alert: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,7 +32,6 @@
             overflow-x: hidden;
         }
 
-        /* Neomorphic card */
         .neo-card {
             background: var(--bg-card);
             border-radius: 20px;
@@ -50,19 +50,10 @@
                 inset -2px -2px 6px rgba(255,255,255,0.01);
         }
 
-        .gold-border {
-            border: 1px solid var(--gold-dim);
-        }
+        .gold-border { border: 1px solid var(--gold-dim); }
+        .blue-glow { box-shadow: 0 0 30px rgba(59, 130, 246, 0.25), 0 0 60px rgba(59, 130, 246, 0.1); }
+        .gold-glow { box-shadow: 0 0 20px rgba(251, 191, 36, 0.15); }
 
-        .blue-glow {
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.25), 0 0 60px rgba(59, 130, 246, 0.1);
-        }
-
-        .gold-glow {
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
-        }
-
-        /* Video container */
         #video-container {
             position: relative;
             width: 100%;
@@ -73,26 +64,11 @@
             aspect-ratio: 4/3;
         }
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
+        video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: scaleX(-1); }
 
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform: scaleX(-1);
-        }
-
-        /* Loader */
         .loader-ring {
-            width: 56px;
-            height: 56px;
+            width: 56px; height: 56px;
             border: 3px solid transparent;
             border-top-color: var(--blue-electric);
             border-right-color: var(--gold);
@@ -101,14 +77,12 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Pulse animation for rep count */
         @keyframes pulse-gold {
             0%, 100% { text-shadow: 0 0 8px rgba(251,191,36,0.3); }
             50% { text-shadow: 0 0 25px rgba(251,191,36,0.8), 0 0 50px rgba(251,191,36,0.4); }
         }
         .pulse-rep { animation: pulse-gold 0.5s ease-out; }
 
-        /* Phase indicator */
         .phase-down {
             background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.05));
             border-color: rgba(59,130,246,0.4);
@@ -118,18 +92,48 @@
             border-color: rgba(251,191,36,0.4);
         }
 
-        /* Title font */
         .font-orbitron { font-family: 'Orbitron', monospace; }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
         ::-webkit-scrollbar-thumb { background: var(--blue-electric); border-radius: 4px; }
 
-        /* Footer */
         .footer-line {
             background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
             height: 1px;
+        }
+
+        /* Valgus warning overlay */
+        @keyframes flash-red {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        .valgus-warning {
+            animation: flash-red 0.6s ease-in-out infinite;
+        }
+        .valgus-border {
+            border-color: var(--red-alert) !important;
+            box-shadow: 0 0 30px rgba(239,68,68,0.4), 0 0 60px rgba(239,68,68,0.15) !important;
+        }
+
+        /* Fatigue chart bars */
+        .fatigue-bar {
+            transition: height 0.3s ease;
+            border-radius: 3px 3px 0 0;
+            min-width: 12px;
+        }
+
+        /* Stability meter */
+        .stability-ring {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            border: 3px solid var(--bg-card-inner);
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .stability-ring svg {
+            position: absolute; top: -3px; left: -3px;
+            transform: rotate(-90deg);
         }
     </style>
 </head>
@@ -147,8 +151,11 @@
                     BIOMECHANICAL AI ANALYSIS
                 </p>
             </div>
-            <div class="h-11 w-11 rounded-full flex items-center justify-center neo-card gold-border gold-glow">
-                <span class="font-orbitron text-xs font-bold" style="color: var(--gold);">NF</span>
+            <div class="flex items-center gap-2">
+                <span id="sound-toggle" class="cursor-pointer text-[10px] font-mono text-slate-500 hover:text-slate-300 transition select-none" onclick="toggleSound()">🔊</span>
+                <div class="h-11 w-11 rounded-full flex items-center justify-center neo-card gold-border gold-glow">
+                    <span class="font-orbitron text-xs font-bold" style="color: var(--gold);">NF</span>
+                </div>
             </div>
         </header>
 
@@ -161,6 +168,11 @@
             <div class="absolute top-3 right-3 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5">
                 <span id="status-dot" class="w-2 h-2 rounded-full bg-red-500"></span>
                 <span id="status-text" class="text-[10px] font-mono uppercase text-slate-400">Iniciando…</span>
+            </div>
+
+            <!-- Valgus Warning Overlay -->
+            <div id="valgus-overlay" class="absolute top-3 left-3 z-20 rounded-lg px-3 py-2 bg-red-600/90 backdrop-blur-sm valgus-warning" style="display:none;">
+                <p class="font-orbitron text-[11px] font-bold text-white tracking-wider">¡CORRIGE RODILLAS!</p>
             </div>
 
             <!-- Phase overlay bottom-left -->
@@ -210,7 +222,7 @@
                 <p class="text-[9px] uppercase font-bold tracking-[0.2em] text-slate-400">Rendimiento en Tiempo Real</p>
                 <span id="fps-display" class="text-[9px] font-mono text-slate-600">0 FPS</span>
             </div>
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-4 gap-3">
                 <div class="neo-card-inset p-3 text-center">
                     <p class="text-[8px] uppercase tracking-wider text-slate-500 mb-1">Cadera °</p>
                     <p id="hip-angle" class="font-orbitron text-lg font-bold text-blue-400">0</p>
@@ -223,6 +235,51 @@
                     <p class="text-[8px] uppercase tracking-wider text-slate-500 mb-1">Ángulo Mín</p>
                     <p id="min-angle-val" class="font-orbitron text-lg font-bold" style="color: var(--gold);">—</p>
                 </div>
+                <div class="neo-card-inset p-3 text-center">
+                    <p class="text-[8px] uppercase tracking-wider text-slate-500 mb-1">Estabilidad</p>
+                    <div class="flex justify-center mt-1">
+                        <div class="stability-ring">
+                            <svg width="50" height="50" viewBox="0 0 50 50">
+                                <circle cx="25" cy="25" r="21" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="3"/>
+                                <circle id="stability-arc" cx="25" cy="25" r="21" fill="none" stroke="var(--blue-electric)" stroke-width="3"
+                                    stroke-dasharray="132" stroke-dashoffset="132" stroke-linecap="round"/>
+                            </svg>
+                            <span id="stability-val" class="font-orbitron text-[10px] font-bold text-blue-400">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VALGUS ALERT BANNER (persistent, shows when active) -->
+        <div id="valgus-banner" class="neo-card p-3 mb-5 border border-red-500/30 flex items-center gap-3" style="display:none; background: linear-gradient(135deg, rgba(239,68,68,0.1), var(--bg-card));">
+            <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                <span class="text-red-400 text-sm">⚠</span>
+            </div>
+            <div>
+                <p class="font-orbitron text-[10px] font-bold text-red-400 tracking-wider">VALGO DETECTADO</p>
+                <p class="text-[9px] text-slate-500 font-mono">Rodillas colapsando hacia adentro — corrige la técnica</p>
+            </div>
+        </div>
+
+        <!-- FATIGUE CHART (0.512 Engine) -->
+        <div id="fatigue-section" class="neo-card p-4 mb-5" style="display:none;">
+            <div class="flex justify-between items-center mb-3">
+                <div>
+                    <p class="text-[9px] uppercase font-bold tracking-[0.2em] text-slate-400">Gráfico de Fatiga</p>
+                    <p class="text-[8px] font-mono mt-0.5" style="color: var(--gold);">0.512 ENGINE ANALYSIS</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[9px] font-mono text-slate-500">Prom: <span id="avg-speed" style="color: var(--gold);">—</span></p>
+                    <p class="text-[9px] font-mono text-slate-500">Umbral: <span class="text-red-400">0.512 m/s</span></p>
+                </div>
+            </div>
+            <div id="fatigue-chart" class="neo-card-inset p-3 flex items-end gap-1 justify-center" style="height: 120px;">
+                <!-- Bars injected by JS -->
+            </div>
+            <div class="flex justify-between mt-2">
+                <p class="text-[8px] text-slate-600 font-mono">Rep 1</p>
+                <p id="fatigue-last-rep" class="text-[8px] text-slate-600 font-mono">—</p>
             </div>
         </div>
 
@@ -235,7 +292,7 @@
             <div class="flex justify-between items-center">
                 <div>
                     <p class="font-orbitron text-[10px] font-bold tracking-[0.3em]" style="color: var(--gold);">0.512 ENGINE</p>
-                    <p class="text-[9px] text-slate-600 font-mono">Neural Fit © 2025</p>
+                    <p class="text-[9px] text-slate-600 font-mono">Neural Fit Pro © 2025</p>
                 </div>
                 <div class="text-right">
                     <p class="text-[9px] text-slate-600 font-mono">MediaPipe Pose</p>
@@ -247,37 +304,98 @@
 
     <script>
         // ── DOM References ──
-        const videoElement   = document.getElementById('input_video');
-        const canvasElement  = document.getElementById('output_canvas');
-        const canvasCtx      = canvasElement.getContext('2d');
-        const angleDisplay   = document.getElementById('angle-display');
-        const angleBar       = document.getElementById('angle-bar');
-        const repCount       = document.getElementById('rep-count');
-        const depthStatus    = document.getElementById('depth-status');
-        const minAngleEl     = document.getElementById('min-angle');
-        const minAngleVal    = document.getElementById('min-angle-val');
-        const hipAngleEl     = document.getElementById('hip-angle');
-        const ankleAngleEl   = document.getElementById('ankle-angle');
-        const fpsDisplay     = document.getElementById('fps-display');
-        const loader         = document.getElementById('loading');
-        const statusDot      = document.getElementById('status-dot');
-        const statusText     = document.getElementById('status-text');
-        const phaseBadge     = document.getElementById('phase-badge');
+        const videoElement    = document.getElementById('input_video');
+        const canvasElement   = document.getElementById('output_canvas');
+        const canvasCtx       = canvasElement.getContext('2d');
+        const angleDisplay    = document.getElementById('angle-display');
+        const angleBar        = document.getElementById('angle-bar');
+        const repCountEl      = document.getElementById('rep-count');
+        const depthStatus     = document.getElementById('depth-status');
+        const minAngleEl      = document.getElementById('min-angle');
+        const minAngleVal     = document.getElementById('min-angle-val');
+        const hipAngleEl      = document.getElementById('hip-angle');
+        const ankleAngleEl    = document.getElementById('ankle-angle');
+        const fpsDisplay      = document.getElementById('fps-display');
+        const loader          = document.getElementById('loading');
+        const statusDot       = document.getElementById('status-dot');
+        const statusText      = document.getElementById('status-text');
+        const phaseBadge      = document.getElementById('phase-badge');
+        const valgusOverlay   = document.getElementById('valgus-overlay');
+        const valgusBanner    = document.getElementById('valgus-banner');
+        const videoContainer  = document.getElementById('video-container');
+        const stabilityArc    = document.getElementById('stability-arc');
+        const stabilityVal    = document.getElementById('stability-val');
+        const fatigueSection  = document.getElementById('fatigue-section');
+        const fatigueChart    = document.getElementById('fatigue-chart');
+        const avgSpeedEl      = document.getElementById('avg-speed');
+        const fatigueLastRep  = document.getElementById('fatigue-last-rep');
 
         // ── Squat State Machine ──
         let reps = 0;
-        let phase = 'up';          // 'up' | 'going_down' | 'down' | 'going_up'
+        let phase = 'up';
         let minKneeAngle = 999;
         let sessionMinAngle = null;
 
-        // Thresholds
-        const SQUAT_DOWN_THRESHOLD = 90;   // Below this = squat is deep enough
-        const SQUAT_UP_THRESHOLD   = 160;  // Above this = standing
+        const SQUAT_DOWN_THRESHOLD = 90;
+        const SQUAT_UP_THRESHOLD   = 160;
 
         // FPS tracking
         let lastFrameTime = 0;
         let frameCount = 0;
         let fps = 0;
+
+        // ── Valgus Detection ──
+        let valgusActive = false;
+        let valgusFrameCount = 0;
+        const VALGUS_FRAME_THRESHOLD = 5;
+
+        // ── Fatigue / Speed Tracking ──
+        let repStartTime = null;
+        let repSpeeds = [];
+        const FATIGUE_SPEED_THRESHOLD = 0.512;
+
+        // ── Stability Tracking ──
+        let stabilityBuffer = [];
+        const STABILITY_BUFFER_SIZE = 30;
+
+        // ── Audio Alert (Web Audio API) ──
+        let audioCtx = null;
+        let soundEnabled = true;
+        let lastBeepTime = 0;
+        const BEEP_COOLDOWN = 1500;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playBeep(freq, duration) {
+            if (!soundEnabled || !audioCtx) return;
+            const now = Date.now();
+            if (now - lastBeepTime < BEEP_COOLDOWN) return;
+            lastBeepTime = now;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playValgusBeep() { playBeep(880, 0.15); }
+        function playFatigueBeep() { playBeep(440, 0.25); }
+
+        function toggleSound() {
+            initAudio();
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-toggle').textContent = soundEnabled ? '🔊' : '🔇';
+        }
 
         // ── Angle Calculation ──
         function calculateAngle(A, B, C) {
@@ -300,12 +418,96 @@
             }
         }
 
+        // ── Stability Calculation ──
+        function updateStability(kneeAngle) {
+            stabilityBuffer.push(kneeAngle);
+            if (stabilityBuffer.length > STABILITY_BUFFER_SIZE) {
+                stabilityBuffer.shift();
+            }
+            if (stabilityBuffer.length < 5) return;
+
+            const mean = stabilityBuffer.reduce((a, b) => a + b, 0) / stabilityBuffer.length;
+            const variance = stabilityBuffer.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / stabilityBuffer.length;
+            const stdDev = Math.sqrt(variance);
+
+            // Low std dev = high stability. Map 0-20 stdDev to 100-0%
+            const stabilityPct = Math.max(0, Math.min(100, Math.round(100 - (stdDev / 20) * 100)));
+
+            stabilityVal.textContent = stabilityPct + '%';
+
+            // Update ring arc (circumference = 2*PI*21 ≈ 132)
+            const offset = 132 - (132 * stabilityPct / 100);
+            stabilityArc.setAttribute('stroke-dashoffset', offset);
+
+            // Color based on stability
+            if (stabilityPct >= 70) {
+                stabilityArc.setAttribute('stroke', '#22c55e');
+                stabilityVal.style.color = '#22c55e';
+            } else if (stabilityPct >= 40) {
+                stabilityArc.setAttribute('stroke', '#fbbf24');
+                stabilityVal.style.color = '#fbbf24';
+            } else {
+                stabilityArc.setAttribute('stroke', '#ef4444');
+                stabilityVal.style.color = '#ef4444';
+            }
+        }
+
+        // ── Valgus Detection ──
+        function checkValgus(landmarks) {
+            const leftHip   = landmarks[23];
+            const rightHip  = landmarks[24];
+            const leftKnee  = landmarks[25];
+            const rightKnee = landmarks[26];
+
+            if (!leftHip || !rightHip || !leftKnee || !rightKnee) return false;
+
+            const hipWidth  = Math.abs(leftHip.x - rightHip.x);
+            const kneeWidth = Math.abs(leftKnee.x - rightKnee.x);
+
+            return kneeWidth < hipWidth * 0.85;
+        }
+
+        // ── Fatigue Chart Render ──
+        function renderFatigueChart() {
+            if (repSpeeds.length === 0) return;
+
+            fatigueSection.style.display = 'block';
+
+            const avgSpeed = repSpeeds.reduce((a, b) => a + b, 0) / repSpeeds.length;
+            avgSpeedEl.textContent = avgSpeed.toFixed(3) + ' m/s';
+            fatigueLastRep.textContent = 'Rep ' + repSpeeds.length;
+
+            const maxSpeed = Math.max(...repSpeeds, FATIGUE_SPEED_THRESHOLD);
+            const chartHeight = 90;
+
+            let barsHTML = '';
+            for (let i = 0; i < repSpeeds.length; i++) {
+                const speed = repSpeeds[i];
+                const barH = Math.max(8, (speed / maxSpeed) * chartHeight);
+                const isSlow = speed < FATIGUE_SPEED_THRESHOLD;
+                const barColor = isSlow ? 'var(--red-alert)' : 'var(--blue-electric)';
+                const label = speed.toFixed(2);
+
+                barsHTML += `
+                    <div class="flex flex-col items-center gap-1" style="flex:1; max-width:28px;">
+                        <span class="text-[7px] font-mono ${isSlow ? 'text-red-400' : 'text-blue-400'}">${label}</span>
+                        <div class="fatigue-bar w-full" style="height:${barH}px; background:${barColor};"></div>
+                        <span class="text-[7px] text-slate-600 font-mono">${i + 1}</span>
+                    </div>
+                `;
+            }
+
+            fatigueChart.innerHTML = barsHTML;
+        }
+
         // ── MediaPipe Results Handler ──
         function onResults(results) {
-            // Hide loader on first frame
             loader.style.display = 'none';
             statusDot.className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
             statusText.textContent = 'IA Activa';
+
+            // Initialize audio on first user interaction proxy
+            initAudio();
 
             // FPS calculation
             frameCount++;
@@ -317,69 +519,93 @@
                 fpsDisplay.textContent = fps + ' FPS';
             }
 
-            // Canvas setup
             canvasElement.width  = videoElement.videoWidth;
             canvasElement.height = videoElement.videoHeight;
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
             if (results.poseLandmarks) {
-                // Draw skeleton — Neon Blue
                 drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
-                    color: '#00d4ff',
-                    lineWidth: 3
+                    color: '#00d4ff', lineWidth: 3
                 });
-
-                // Draw landmarks — white dots with blue glow
                 drawLandmarks(canvasCtx, results.poseLandmarks, {
-                    color: '#ffffff',
-                    fillColor: 'rgba(0, 212, 255, 0.6)',
-                    lineWidth: 1,
-                    radius: 3
+                    color: '#ffffff', fillColor: 'rgba(0, 212, 255, 0.6)', lineWidth: 1, radius: 3
                 });
 
-                // ── Extract key landmarks ──
                 const lm = results.poseLandmarks;
-                const hip   = lm[24];  // Right hip
-                const knee  = lm[26];  // Right knee
-                const ankle = lm[28];  // Right ankle
+                const hip      = lm[24];
+                const knee     = lm[26];
+                const ankle    = lm[28];
+                const shoulder = lm[12];
+                const foot     = lm[32];
 
-                // Additional landmarks for extra metrics
-                const shoulder = lm[12]; // Right shoulder
-                const foot     = lm[32]; // Right foot index
+                // ── Valgus Detection ──
+                const isValgus = checkValgus(lm);
+                if (isValgus && phase === 'down') {
+                    valgusFrameCount++;
+                    if (valgusFrameCount >= VALGUS_FRAME_THRESHOLD) {
+                        valgusActive = true;
+                        valgusOverlay.style.display = 'block';
+                        valgusBanner.style.display = 'flex';
+                        videoContainer.classList.add('valgus-border');
+                        videoContainer.classList.remove('blue-glow');
+                        playValgusBeep();
+
+                        // Draw valgus lines on canvas
+                        const lk = lm[25], rk = lm[26];
+                        if (lk && rk) {
+                            canvasCtx.beginPath();
+                            canvasCtx.moveTo(lk.x * canvasElement.width, lk.y * canvasElement.height);
+                            canvasCtx.lineTo(rk.x * canvasElement.width, rk.y * canvasElement.height);
+                            canvasCtx.strokeStyle = '#ef4444';
+                            canvasCtx.lineWidth = 2;
+                            canvasCtx.setLineDash([6, 4]);
+                            canvasCtx.stroke();
+                            canvasCtx.setLineDash([]);
+                        }
+                    }
+                } else {
+                    valgusFrameCount = 0;
+                    if (valgusActive) {
+                        valgusActive = false;
+                        valgusOverlay.style.display = 'none';
+                        valgusBanner.style.display = 'none';
+                        videoContainer.classList.remove('valgus-border');
+                        videoContainer.classList.add('blue-glow');
+                    }
+                }
 
                 if (hip && knee && ankle) {
-                    // ── Knee Angle ──
                     const kneeAngle = calculateAngle(hip, knee, ankle);
                     angleDisplay.textContent = kneeAngle + '°';
 
-                    // Angle bar (0-180 mapped to 0-100%)
                     const barPct = Math.min(100, Math.max(0, ((180 - kneeAngle) / 180) * 100));
                     angleBar.style.width = barPct + '%';
 
-                    // Color the angle based on depth
                     if (kneeAngle <= SQUAT_DOWN_THRESHOLD) {
-                        angleDisplay.style.color = '#fbbf24'; // gold when deep
+                        angleDisplay.style.color = '#fbbf24';
                     } else {
-                        angleDisplay.style.color = '#60a5fa'; // blue otherwise
+                        angleDisplay.style.color = '#60a5fa';
                     }
 
-                    // ── Hip Angle ──
                     if (shoulder) {
                         const hipAng = calculateAngle(shoulder, hip, knee);
                         hipAngleEl.textContent = hipAng + '°';
                     }
 
-                    // ── Ankle Angle ──
                     if (foot) {
                         const ankleAng = calculateAngle(knee, ankle, foot);
                         ankleAngleEl.textContent = ankleAng + '°';
                     }
 
+                    // ── Stability ──
+                    updateStability(kneeAngle);
+
                     // ── Squat Counting State Machine ──
                     if (phase === 'up' && kneeAngle < SQUAT_DOWN_THRESHOLD) {
                         phase = 'down';
                         minKneeAngle = kneeAngle;
+                        repStartTime = performance.now();
                         updatePhaseBadge('down');
                     }
 
@@ -388,7 +614,6 @@
                             minKneeAngle = kneeAngle;
                         }
 
-                        // Depth feedback
                         if (kneeAngle <= 70) {
                             depthStatus.textContent = 'PROFUNDA';
                             depthStatus.style.color = '#fbbf24';
@@ -398,15 +623,13 @@
                         }
 
                         if (kneeAngle > SQUAT_UP_THRESHOLD) {
-                            // Completed a rep!
                             reps++;
                             phase = 'up';
-                            repCount.textContent = reps;
-                            repCount.classList.remove('pulse-rep');
-                            void repCount.offsetWidth; // trigger reflow
-                            repCount.classList.add('pulse-rep');
+                            repCountEl.textContent = reps;
+                            repCountEl.classList.remove('pulse-rep');
+                            void repCountEl.offsetWidth;
+                            repCountEl.classList.add('pulse-rep');
 
-                            // Track session min angle
                             if (sessionMinAngle === null || minKneeAngle < sessionMinAngle) {
                                 sessionMinAngle = minKneeAngle;
                             }
@@ -417,11 +640,25 @@
                             depthStatus.style.color = '#22c55e';
 
                             updatePhaseBadge('up');
+
+                            // ── Speed / Fatigue Calculation ──
+                            if (repStartTime) {
+                                const repDuration = (performance.now() - repStartTime) / 1000;
+                                const estimatedDistance = 0.5;
+                                const speed = estimatedDistance / repDuration;
+                                repSpeeds.push(parseFloat(speed.toFixed(3)));
+                                renderFatigueChart();
+
+                                if (speed < FATIGUE_SPEED_THRESHOLD) {
+                                    playFatigueBeep();
+                                }
+                            }
+                            repStartTime = null;
                             minKneeAngle = 999;
                         }
                     }
 
-                    // Draw angle text on canvas near the knee
+                    // Draw angle on canvas
                     const kx = knee.x * canvasElement.width;
                     const ky = knee.y * canvasElement.height;
                     canvasCtx.font = 'bold 18px Orbitron, monospace';
@@ -450,13 +687,9 @@
 
         pose.onResults(onResults);
 
-        // ── Initialize Camera ──
         const camera = new Camera(videoElement, {
-            onFrame: async () => {
-                await pose.send({ image: videoElement });
-            },
-            width: 640,
-            height: 480,
+            onFrame: async () => { await pose.send({ image: videoElement }); },
+            width: 640, height: 480,
             facingMode: 'environment'
         });
 
@@ -475,6 +708,10 @@
                 </div>
             `;
         });
+
+        // Auto-init audio on first touch (mobile requirement)
+        document.addEventListener('touchstart', initAudio, { once: true });
+        document.addEventListener('click', initAudio, { once: true });
     </script>
 
 </body>
