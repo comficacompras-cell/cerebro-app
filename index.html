@@ -3,100 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI TRAINER - Neomorphic Elite</title>
+    <title>AI TRAINER - Elite Biometrics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Estilos neomórficos personalizados */
+        body { background-color: #0f111a; }
+        .neo-card {
+            background: #0f111a;
+            box-shadow: 8px 8px 16px #06070a, -8px -8px 16px #181b2a;
+            border-radius: 24px;
+        }
         .neo-inset {
-            box-shadow: inset 4px 4px 10px #030712, inset -4px -4px 10px #1f2937;
+            background: #0f111a;
+            box-shadow: inset 6px 6px 12px #06070a, inset -6px -6px 12px #181b2a;
         }
-        .neo-outset {
-            box-shadow: 4px 4px 10px #030712, -4px -4px 10px #1f2937;
-        }
-        .neo-button:active {
-            box-shadow: inset 2px 2px 5px #030712, inset -2px -2px 5px #1f2937;
-        }
+        .accent-red { color: #ff3e3e; text-shadow: 0 0 10px rgba(255, 62, 62, 0.5); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen pb-24">
+<body class="text-slate-200 font-sans p-4 pb-24">
 
-    <nav class="p-6 flex justify-between items-center bg-slate-950 border-b border-slate-900 shadow-lg">
+    <header class="flex justify-between items-center mb-8 px-2">
         <div>
-            <h1 class="text-2xl font-black text-rose-500 tracking-tighter">AI TRAINER <span class="text-xs text-slate-600 font-mono">v1.1</span></h1>
-            <p class="text-xs text-slate-400">Analizando ciencia deportiva 2026...</p>
+            <h1 class="text-2xl font-black accent-red tracking-tighter italic">CEREBRO 0.512</h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Neural Training System</p>
         </div>
-        <div class="h-4 w-4 bg-rose-500 rounded-full animate-pulse shadow-lg shadow-rose-900"></div>
-    </nav>
+        <div class="h-10 w-10 neo-card flex items-center justify-center">
+            <i class="fa-solid fa-user-ninja text-rose-500"></i>
+        </div>
+    </header>
 
-    <main class="p-6 max-w-lg mx-auto space-y-8">
-        
-        <div class="bg-slate-950 p-6 rounded-3xl neo-outset border border-slate-900/50">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-bold text-slate-300">Recuperación Neural</h2>
-                <span class="bg-rose-500/10 text-rose-400 text-xs px-3 py-1 rounded-full font-bold border border-rose-900">ÓPTIMO</span>
+    <div class="neo-card p-6 mb-8 border border-slate-800/50">
+        <div class="flex justify-between items-start mb-4">
+            <h2 class="text-sm font-bold uppercase text-slate-400">Estado de Recuperación</h2>
+            <span class="text-xs font-mono text-emerald-400">SYSTEM: ONLINE</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="relative h-24 w-24 neo-inset rounded-full flex items-center justify-center">
+                <svg class="absolute h-20 w-20 transform -rotate-90">
+                    <circle cx="40" cy="40" r="35" stroke="#1e293b" stroke-width="6" fill="transparent" />
+                    <circle cx="40" cy="40" r="35" stroke="#ff3e3e" stroke-width="6" fill="transparent" stroke-dasharray="220" stroke-dashoffset="44" />
+                </svg>
+                <span class="text-xl font-black accent-red">80%</span>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="relative neo-inset p-4 rounded-full">
-                    <svg class="h-24 w-24 transform -rotate-90">
-                        <circle cx="48" cy="48" r="40" stroke="#111827" stroke-width="12" fill="transparent"/>
-                        <circle cx="48" cy="48" r="40" stroke="#f43f5e" stroke-width="12" fill="transparent" stroke-dasharray="251" stroke-dashoffset="50" class="transition-all duration-1000"/>
-                    </svg>
-                    <span class="absolute inset-0 flex items-center justify-center font-black text-2xl text-rose-500">80%</span>
-                </div>
-                <p class="text-sm text-slate-400 font-light italic leading-relaxed">
-                    "Tus ciclos de sueño indican una fase de supercompensación. Hoy es ideal para cargas de alta intensidad biomecánica."
+            <div class="flex-1">
+                <p class="text-xs leading-relaxed text-slate-400 italic">
+                    "Fatiga del SNC detectada en 15%. Carga de trabajo recomendada: <span class="text-white font-bold">ALTA (Hipertrofia)</span>."
                 </p>
             </div>
         </div>
+    </div>
 
-        <div class="grid grid-cols-2 gap-6">
-            <button onclick="alert('IA: Hidratación registrada.')" class="bg-slate-950 p-6 rounded-3xl neo-outset border border-slate-900/50 text-center neo-button active:scale-95 transition-all">
-                <i class="fa-solid fa-droplet text-blue-500 mb-3 text-3xl shadow-lg shadow-blue-900/30"></i>
-                <p class="text-xs block text-slate-400 uppercase font-bold tracking-wider mb-1">Agua</p>
-                <span class="text-xl font-black">1.5 <span class="text-sm text-slate-600">/ 3L</span></span>
-            </button>
-            <button onclick="alert('IA: Iniciando cámara para escáner biomecánico...')" class="bg-slate-950 p-6 rounded-3xl neo-outset border border-slate-900/50 text-center neo-button active:scale-95 transition-all">
-                <i class="fa-solid fa-camera text-emerald-500 mb-3 text-3xl shadow-lg shadow-emerald-900/30"></i>
-                <p class="text-xs block text-slate-400 uppercase font-bold tracking-wider mb-1">Escáner</p>
-                <span class="text-xl font-black italic">Fotos</span>
-            </button>
+    <div class="grid grid-cols-2 gap-6 mb-8">
+        <div class="neo-card p-5 text-center border border-slate-800/30">
+            <i class="fa-solid fa-droplet text-blue-500 mb-2 text-2xl"></i>
+            <p class="text-[10px] uppercase text-slate-500 font-bold mb-1 tracking-tighter">Hidratación</p>
+            <span class="text-lg font-black italic">1.5 / 3.0L</span>
         </div>
-
-        <div class="bg-slate-950 rounded-3xl p-6 neo-outset border border-slate-900/50">
-            <div class="flex items-center gap-4 mb-6 pb-4 border-b border-slate-900">
-                <i class="fa-solid fa-dumbbell text-slate-700 text-2xl"></i>
-                <h3 class="text-xl font-black tracking-tight">Rutina: Enfoque Fuerza</h3>
-            </div>
-            
-            <div class="space-y-4 mb-8">
-                <div class="flex justify-between items-center text-sm">
-                    <span class="text-slate-400">1. Press de Banca</span>
-                    <span class="font-mono text-xs bg-slate-900 px-2 py-1 rounded">3 x 5 @ 85% RM</span>
-                </div>
-                <div class="flex justify-between items-center text-sm">
-                    <span class="text-slate-400">2. Sentadilla Barra</span>
-                    <span class="font-mono text-xs bg-slate-900 px-2 py-1 rounded">4 x 6 @ 80% RM</span>
-                </div>
-            </div>
-
-            <div class="flex gap-4">
-                <button onclick="alert('IA: ¡Excelente! Subiendo dificultad.')" class="flex-1 bg-gradient-to-br from-emerald-600 to-emerald-700 p-4 rounded-xl font-bold active:scale-95 transition-all shadow-lg shadow-emerald-900/40">
-                    LOGRADO ✅
-                </button>
-                <button onclick="alert('IA: Fatiga detectada. Bajando volumen.')" class="flex-1 bg-gradient-to-br from-rose-600 to-rose-700 p-4 rounded-xl font-bold active:scale-95 transition-all shadow-lg shadow-rose-900/40">
-                    MUY PESADO ❌
-                </button>
-            </div>
+        <div class="neo-card p-5 text-center border border-slate-800/30">
+            <i class="fa-solid fa-bolt-lightning accent-red mb-2 text-2xl"></i>
+            <p class="text-[10px] uppercase text-slate-500 font-bold mb-1 tracking-tighter">Preparado</p>
+            <span class="text-lg font-black italic">READY</span>
         </div>
+    </div>
 
-    </main>
+    <div class="neo-card overflow-hidden mb-8 relative border border-rose-900/20">
+        <div class="bg-rose-600/10 p-3 flex items-center gap-2 border-b border-rose-900/20">
+            <i class="fa-solid fa-video accent-red text-xs animate-pulse"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">Módulo de Análisis Biomecánico</span>
+        </div>
+        <div class="p-6 text-center">
+            <button onclick="alert('IA: Accediendo a cámara para análisis de velocidad (VBT)...')" class="w-full bg-rose-600 hover:bg-rose-700 p-4 rounded-xl font-black text-sm tracking-widest transition-all active:scale-95 shadow-lg shadow-rose-900/40 uppercase italic">
+                Activar Escáner IA
+            </button>
+            <p class="text-[9px] text-slate-500 mt-3 px-4">
+                Usa la cámara para medir RPE real, velocidad de la barra y corrección técnica instantánea.
+            </p>
+        </div>
+    </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-lg border-t border-slate-900 p-4 flex justify-around items-center shadow-xl">
-        <i class="fa-solid fa-house text-rose-500 text-xl shadow-lg shadow-rose-900/30"></i>
-        <i class="fa-solid fa-chart-simple text-slate-700 text-xl"></i>
-        <i class="fa-solid fa-flask text-slate-700 text-xl"></i>
-        <i class="fa-solid fa-user text-slate-700 text-xl"></i>
+    <nav class="fixed bottom-6 left-6 right-6 h-16 neo-card flex justify-around items-center px-4 border border-slate-800/50">
+        <i class="fa-solid fa-house-chimney accent-red text-lg"></i>
+        <i class="fa-solid fa-chart-line text-slate-600 text-lg"></i>
+        <div class="h-12 w-12 neo-card mb-8 flex items-center justify-center border border-rose-500/30">
+            <i class="fa-solid fa-plus accent-red"></i>
+        </div>
+        <i class="fa-solid fa-flask-vial text-slate-600 text-lg"></i>
+        <i class="fa-solid fa-gear text-slate-600 text-lg"></i>
     </nav>
 
 </body>
