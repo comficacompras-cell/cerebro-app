@@ -2,103 +2,480 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURAL FIT - AI ENGINE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEURAL FIT — Análisis Biomecánico IA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #0a0c10; color: #e2e8f0; font-family: sans-serif; }
-        .gold-border { border: 1px solid rgba(212, 175, 55, 0.3); }
-        .blue-glow { box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
-        #video-container { position: relative; width: 100%; border-radius: 30px; overflow: hidden; background: #000; border: 2px solid #1e293b; }
-        video { width: 100%; height: auto; transform: scaleX(-1); }
-        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: scaleX(-1); }
+        :root {
+            --blue-electric: #3b82f6;
+            --blue-neon: #00d4ff;
+            --gold: #fbbf24;
+            --gold-dim: rgba(251, 191, 36, 0.3);
+            --bg-deep: #050507;
+            --bg-card: #0c0e14;
+            --bg-card-inner: #10131a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-deep);
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Neomorphic card */
+        .neo-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.04);
+            box-shadow:
+                8px 8px 20px rgba(0,0,0,0.6),
+                -4px -4px 12px rgba(255,255,255,0.02);
+        }
+
+        .neo-card-inset {
+            background: var(--bg-card-inner);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.03);
+            box-shadow:
+                inset 4px 4px 10px rgba(0,0,0,0.5),
+                inset -2px -2px 6px rgba(255,255,255,0.01);
+        }
+
+        .gold-border {
+            border: 1px solid var(--gold-dim);
+        }
+
+        .blue-glow {
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.25), 0 0 60px rgba(59, 130, 246, 0.1);
+        }
+
+        .gold-glow {
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
+        }
+
+        /* Video container */
+        #video-container {
+            position: relative;
+            width: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #000;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            aspect-ratio: 4/3;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(-1);
+        }
+
+        /* Loader */
+        .loader-ring {
+            width: 56px;
+            height: 56px;
+            border: 3px solid transparent;
+            border-top-color: var(--blue-electric);
+            border-right-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Pulse animation for rep count */
+        @keyframes pulse-gold {
+            0%, 100% { text-shadow: 0 0 8px rgba(251,191,36,0.3); }
+            50% { text-shadow: 0 0 25px rgba(251,191,36,0.8), 0 0 50px rgba(251,191,36,0.4); }
+        }
+        .pulse-rep { animation: pulse-gold 0.5s ease-out; }
+
+        /* Phase indicator */
+        .phase-down {
+            background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.05));
+            border-color: rgba(59,130,246,0.4);
+        }
+        .phase-up {
+            background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(251,191,36,0.05));
+            border-color: rgba(251,191,36,0.4);
+        }
+
+        /* Title font */
+        .font-orbitron { font-family: 'Orbitron', monospace; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--blue-electric); border-radius: 4px; }
+
+        /* Footer */
+        .footer-line {
+            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+            height: 1px;
+        }
     </style>
 </head>
-<body class="p-4">
+<body>
 
-    <header class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-3xl font-black italic text-blue-500 tracking-tighter uppercase">NEURAL FIT</h1>
-            <p class="text-[10px] text-amber-500 font-mono tracking-[0.2em]">0.512 ENGINE ACTIVE</p>
-        </div>
-        <div class="h-10 w-10 rounded-full border-2 border-amber-500 flex items-center justify-center">
-            <span class="text-[10px] font-bold text-amber-500 italic">NF</span>
-        </div>
-    </header>
+    <div class="max-w-lg mx-auto px-4 py-5 flex flex-col min-h-screen">
 
-    <div id="video-container" class="blue-glow mb-6">
-        <video id="input_video"></video>
-        <canvas id="output_canvas"></canvas>
-        <div id="loading" class="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
-            <div class="text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                <p class="text-blue-400 font-mono text-xs uppercase">Cargando Redes Neurales...</p>
+        <!-- HEADER -->
+        <header class="flex justify-between items-center mb-5">
+            <div>
+                <h1 class="font-orbitron text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 tracking-wider">
+                    NEURAL FIT
+                </h1>
+                <p class="text-[10px] font-mono tracking-[0.3em] mt-0.5" style="color: var(--gold);">
+                    BIOMECHANICAL AI ANALYSIS
+                </p>
+            </div>
+            <div class="h-11 w-11 rounded-full flex items-center justify-center neo-card gold-border gold-glow">
+                <span class="font-orbitron text-xs font-bold" style="color: var(--gold);">NF</span>
+            </div>
+        </header>
+
+        <!-- CAMERA VIEW -->
+        <div id="video-container" class="blue-glow mb-5">
+            <video id="input_video" playsinline></video>
+            <canvas id="output_canvas"></canvas>
+
+            <!-- Status overlay top-right -->
+            <div class="absolute top-3 right-3 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5">
+                <span id="status-dot" class="w-2 h-2 rounded-full bg-red-500"></span>
+                <span id="status-text" class="text-[10px] font-mono uppercase text-slate-400">Iniciando…</span>
+            </div>
+
+            <!-- Phase overlay bottom-left -->
+            <div id="phase-badge" class="absolute bottom-3 left-3 z-20 rounded-full px-3 py-1 border text-[10px] font-mono uppercase tracking-wider text-slate-300 bg-black/50 backdrop-blur-sm" style="display:none;">
+                —
+            </div>
+
+            <!-- Loading screen -->
+            <div id="loading" class="absolute inset-0 flex items-center justify-center bg-black/90 z-30">
+                <div class="text-center">
+                    <div class="loader-ring mx-auto mb-4"></div>
+                    <p class="font-orbitron text-blue-400 text-xs uppercase tracking-widest">Cargando Redes Neurales</p>
+                    <p class="text-[10px] text-slate-500 font-mono mt-2">MediaPipe Pose v0.5</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="grid grid-cols-2 gap-4">
-        <div class="bg-slate-900/50 p-4 rounded-2xl gold-border">
-            <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest mb-1">Ángulo Rodilla</p>
-            <p id="angle-display" class="text-3xl font-black font-mono text-blue-400">0°</p>
+        <!-- DATA PANELS -->
+        <div class="grid grid-cols-3 gap-3 mb-5">
+            <!-- Knee Angle -->
+            <div class="neo-card p-4 gold-border gold-glow col-span-1">
+                <p class="text-[8px] uppercase font-bold tracking-[0.2em] mb-2" style="color: var(--gold);">Ángulo Rodilla</p>
+                <p id="angle-display" class="font-orbitron text-2xl font-black text-blue-400">0°</p>
+                <div class="mt-2 h-1 rounded-full bg-slate-800 overflow-hidden">
+                    <div id="angle-bar" class="h-full rounded-full transition-all duration-200" style="width:0%; background: linear-gradient(90deg, var(--blue-electric), var(--blue-neon));"></div>
+                </div>
+            </div>
+
+            <!-- Rep Counter -->
+            <div class="neo-card p-4 gold-border gold-glow col-span-1 text-center">
+                <p class="text-[8px] uppercase font-bold tracking-[0.2em] mb-2" style="color: var(--gold);">Repeticiones</p>
+                <p id="rep-count" class="font-orbitron text-4xl font-black" style="color: var(--gold);">0</p>
+                <p class="text-[9px] text-slate-500 font-mono mt-1">SENTADILLAS</p>
+            </div>
+
+            <!-- Depth Status -->
+            <div class="neo-card p-4 gold-border col-span-1">
+                <p class="text-[8px] uppercase font-bold tracking-[0.2em] mb-2" style="color: var(--gold);">Profundidad</p>
+                <p id="depth-status" class="font-orbitron text-lg font-bold text-slate-500">—</p>
+                <p id="min-angle" class="text-[9px] text-slate-600 font-mono mt-1">Mín: —</p>
+            </div>
         </div>
-        <div class="bg-slate-900/50 p-4 rounded-2xl gold-border">
-            <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest mb-1">Velocidad m/s</p>
-            <p class="text-3xl font-black font-mono text-amber-500">0.00</p>
+
+        <!-- PERFORMANCE STATS -->
+        <div class="neo-card p-4 mb-5">
+            <div class="flex justify-between items-center mb-3">
+                <p class="text-[9px] uppercase font-bold tracking-[0.2em] text-slate-400">Rendimiento en Tiempo Real</p>
+                <span id="fps-display" class="text-[9px] font-mono text-slate-600">0 FPS</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="neo-card-inset p-3 text-center">
+                    <p class="text-[8px] uppercase tracking-wider text-slate-500 mb-1">Cadera °</p>
+                    <p id="hip-angle" class="font-orbitron text-lg font-bold text-blue-400">0</p>
+                </div>
+                <div class="neo-card-inset p-3 text-center">
+                    <p class="text-[8px] uppercase tracking-wider text-slate-500 mb-1">Tobillo °</p>
+                    <p id="ankle-angle" class="font-orbitron text-lg font-bold text-blue-400">0</p>
+                </div>
+                <div class="neo-card-inset p-3 text-center">
+                    <p class="text-[8px] uppercase tracking-wider text-slate-500 mb-1">Ángulo Mín</p>
+                    <p id="min-angle-val" class="font-orbitron text-lg font-bold" style="color: var(--gold);">—</p>
+                </div>
+            </div>
         </div>
+
+        <!-- SPACER -->
+        <div class="flex-grow"></div>
+
+        <!-- FOOTER -->
+        <footer class="mt-6 pb-4">
+            <div class="footer-line mb-3"></div>
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="font-orbitron text-[10px] font-bold tracking-[0.3em]" style="color: var(--gold);">0.512 ENGINE</p>
+                    <p class="text-[9px] text-slate-600 font-mono">Neural Fit © 2025</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[9px] text-slate-600 font-mono">MediaPipe Pose</p>
+                    <p class="text-[9px] text-slate-600 font-mono">TensorFlow.js</p>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script>
-        const videoElement = document.getElementById('input_video');
-        const canvasElement = document.getElementById('output_canvas');
-        const canvasCtx = canvasElement.getContext('2d');
-        const angleDisplay = document.getElementById('angle-display');
-        const loader = document.getElementById('loading');
+        // ── DOM References ──
+        const videoElement   = document.getElementById('input_video');
+        const canvasElement  = document.getElementById('output_canvas');
+        const canvasCtx      = canvasElement.getContext('2d');
+        const angleDisplay   = document.getElementById('angle-display');
+        const angleBar       = document.getElementById('angle-bar');
+        const repCount       = document.getElementById('rep-count');
+        const depthStatus    = document.getElementById('depth-status');
+        const minAngleEl     = document.getElementById('min-angle');
+        const minAngleVal    = document.getElementById('min-angle-val');
+        const hipAngleEl     = document.getElementById('hip-angle');
+        const ankleAngleEl   = document.getElementById('ankle-angle');
+        const fpsDisplay     = document.getElementById('fps-display');
+        const loader         = document.getElementById('loading');
+        const statusDot      = document.getElementById('status-dot');
+        const statusText     = document.getElementById('status-text');
+        const phaseBadge     = document.getElementById('phase-badge');
 
+        // ── Squat State Machine ──
+        let reps = 0;
+        let phase = 'up';          // 'up' | 'going_down' | 'down' | 'going_up'
+        let minKneeAngle = 999;
+        let sessionMinAngle = null;
+
+        // Thresholds
+        const SQUAT_DOWN_THRESHOLD = 90;   // Below this = squat is deep enough
+        const SQUAT_UP_THRESHOLD   = 160;  // Above this = standing
+
+        // FPS tracking
+        let lastFrameTime = 0;
+        let frameCount = 0;
+        let fps = 0;
+
+        // ── Angle Calculation ──
         function calculateAngle(A, B, C) {
-            let radians = Math.atan2(C.y - B.y, C.x - B.x) - Math.atan2(A.y - B.y, A.x - B.x);
+            const radians = Math.atan2(C.y - B.y, C.x - B.x) - Math.atan2(A.y - B.y, A.x - B.x);
             let angle = Math.abs(radians * 180.0 / Math.PI);
             if (angle > 180.0) angle = 360 - angle;
             return Math.round(angle);
         }
 
+        // ── Update Phase Badge ──
+        function updatePhaseBadge(currentPhase) {
+            phaseBadge.style.display = 'block';
+            if (currentPhase === 'down' || currentPhase === 'going_down') {
+                phaseBadge.textContent = '▼ BAJANDO';
+                phaseBadge.className = 'absolute bottom-3 left-3 z-20 rounded-full px-3 py-1 border text-[10px] font-mono uppercase tracking-wider text-blue-300 phase-down backdrop-blur-sm';
+            } else {
+                phaseBadge.textContent = '▲ SUBIENDO';
+                phaseBadge.className = 'absolute bottom-3 left-3 z-20 rounded-full px-3 py-1 border text-[10px] font-mono uppercase tracking-wider phase-up backdrop-blur-sm';
+                phaseBadge.style.color = '#fbbf24';
+            }
+        }
+
+        // ── MediaPipe Results Handler ──
         function onResults(results) {
+            // Hide loader on first frame
             loader.style.display = 'none';
-            canvasElement.width = videoElement.videoWidth;
+            statusDot.className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
+            statusText.textContent = 'IA Activa';
+
+            // FPS calculation
+            frameCount++;
+            const now = performance.now();
+            if (now - lastFrameTime >= 1000) {
+                fps = frameCount;
+                frameCount = 0;
+                lastFrameTime = now;
+                fpsDisplay.textContent = fps + ' FPS';
+            }
+
+            // Canvas setup
+            canvasElement.width  = videoElement.videoWidth;
             canvasElement.height = videoElement.videoHeight;
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-            
-            if (results.poseLandmarks) {
-                // Dibujar el esqueleto con color Azul Neón
-                drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {color: '#3b82f6', lineWidth: 4});
-                drawLandmarks(canvasCtx, results.poseLandmarks, {color: '#ffffff', lineWidth: 2, radius: 4});
 
-                // Calcular Ángulo de Rodilla (Cadera, Rodilla, Tobillo)
-                const hip = results.poseLandmarks[24];
-                const knee = results.poseLandmarks[26];
-                const ankle = results.poseLandmarks[28];
-                
+            if (results.poseLandmarks) {
+                // Draw skeleton — Neon Blue
+                drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+                    color: '#00d4ff',
+                    lineWidth: 3
+                });
+
+                // Draw landmarks — white dots with blue glow
+                drawLandmarks(canvasCtx, results.poseLandmarks, {
+                    color: '#ffffff',
+                    fillColor: 'rgba(0, 212, 255, 0.6)',
+                    lineWidth: 1,
+                    radius: 3
+                });
+
+                // ── Extract key landmarks ──
+                const lm = results.poseLandmarks;
+                const hip   = lm[24];  // Right hip
+                const knee  = lm[26];  // Right knee
+                const ankle = lm[28];  // Right ankle
+
+                // Additional landmarks for extra metrics
+                const shoulder = lm[12]; // Right shoulder
+                const foot     = lm[32]; // Right foot index
+
                 if (hip && knee && ankle) {
-                    const angle = calculateAngle(hip, knee, ankle);
-                    angleDisplay.innerText = angle + "°";
+                    // ── Knee Angle ──
+                    const kneeAngle = calculateAngle(hip, knee, ankle);
+                    angleDisplay.textContent = kneeAngle + '°';
+
+                    // Angle bar (0-180 mapped to 0-100%)
+                    const barPct = Math.min(100, Math.max(0, ((180 - kneeAngle) / 180) * 100));
+                    angleBar.style.width = barPct + '%';
+
+                    // Color the angle based on depth
+                    if (kneeAngle <= SQUAT_DOWN_THRESHOLD) {
+                        angleDisplay.style.color = '#fbbf24'; // gold when deep
+                    } else {
+                        angleDisplay.style.color = '#60a5fa'; // blue otherwise
+                    }
+
+                    // ── Hip Angle ──
+                    if (shoulder) {
+                        const hipAng = calculateAngle(shoulder, hip, knee);
+                        hipAngleEl.textContent = hipAng + '°';
+                    }
+
+                    // ── Ankle Angle ──
+                    if (foot) {
+                        const ankleAng = calculateAngle(knee, ankle, foot);
+                        ankleAngleEl.textContent = ankleAng + '°';
+                    }
+
+                    // ── Squat Counting State Machine ──
+                    if (phase === 'up' && kneeAngle < SQUAT_DOWN_THRESHOLD) {
+                        phase = 'down';
+                        minKneeAngle = kneeAngle;
+                        updatePhaseBadge('down');
+                    }
+
+                    if (phase === 'down') {
+                        if (kneeAngle < minKneeAngle) {
+                            minKneeAngle = kneeAngle;
+                        }
+
+                        // Depth feedback
+                        if (kneeAngle <= 70) {
+                            depthStatus.textContent = 'PROFUNDA';
+                            depthStatus.style.color = '#fbbf24';
+                        } else {
+                            depthStatus.textContent = 'PARALELA';
+                            depthStatus.style.color = '#60a5fa';
+                        }
+
+                        if (kneeAngle > SQUAT_UP_THRESHOLD) {
+                            // Completed a rep!
+                            reps++;
+                            phase = 'up';
+                            repCount.textContent = reps;
+                            repCount.classList.remove('pulse-rep');
+                            void repCount.offsetWidth; // trigger reflow
+                            repCount.classList.add('pulse-rep');
+
+                            // Track session min angle
+                            if (sessionMinAngle === null || minKneeAngle < sessionMinAngle) {
+                                sessionMinAngle = minKneeAngle;
+                            }
+                            minAngleEl.textContent = 'Mín: ' + minKneeAngle + '°';
+                            minAngleVal.textContent = sessionMinAngle + '°';
+
+                            depthStatus.textContent = 'DE PIE';
+                            depthStatus.style.color = '#22c55e';
+
+                            updatePhaseBadge('up');
+                            minKneeAngle = 999;
+                        }
+                    }
+
+                    // Draw angle text on canvas near the knee
+                    const kx = knee.x * canvasElement.width;
+                    const ky = knee.y * canvasElement.height;
+                    canvasCtx.font = 'bold 18px Orbitron, monospace';
+                    canvasCtx.fillStyle = '#fbbf24';
+                    canvasCtx.strokeStyle = '#000';
+                    canvasCtx.lineWidth = 3;
+                    canvasCtx.strokeText(kneeAngle + '°', kx + 15, ky - 10);
+                    canvasCtx.fillText(kneeAngle + '°', kx + 15, ky - 10);
                 }
             }
             canvasCtx.restore();
         }
 
-        const pose = new Pose({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
-        pose.setOptions({ modelComplexity: 1, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+        // ── Initialize MediaPipe Pose ──
+        const pose = new Pose({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`
+        });
+
+        pose.setOptions({
+            modelComplexity: 1,
+            smoothLandmarks: true,
+            enableSegmentation: false,
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.6
+        });
+
         pose.onResults(onResults);
 
+        // ── Initialize Camera ──
         const camera = new Camera(videoElement, {
-            onFrame: async () => { await pose.send({image: videoElement}); },
-            width: 640, height: 480
+            onFrame: async () => {
+                await pose.send({ image: videoElement });
+            },
+            width: 640,
+            height: 480,
+            facingMode: 'environment'
         });
-        camera.start();
+
+        camera.start().then(() => {
+            statusText.textContent = 'Cámara lista';
+        }).catch((err) => {
+            statusText.textContent = 'Error cámara';
+            statusDot.className = 'w-2 h-2 rounded-full bg-red-500';
+            loader.innerHTML = `
+                <div class="text-center p-6">
+                    <p class="font-orbitron text-red-400 text-sm mb-2">Error de Cámara</p>
+                    <p class="text-slate-400 text-xs">Permite el acceso a la cámara para usar Neural Fit</p>
+                    <button onclick="location.reload()" class="mt-4 px-4 py-2 rounded-full text-xs font-mono border border-blue-500 text-blue-400 hover:bg-blue-500/10 transition">
+                        Reintentar
+                    </button>
+                </div>
+            `;
+        });
     </script>
+
 </body>
 </html>
